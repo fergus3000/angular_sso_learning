@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { SocialAuthService  } from '@abacritt/angularx-social-login';
 import { SocialUser } from '@abacritt/angularx-social-login';
 import { GoogleLoginProvider } from '@abacritt/angularx-social-login';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -21,6 +21,14 @@ export class AppComponent {
     if (user) {
       this.http.post<any>('https://localhost:6001/user/authenticate', { idToken: user.idToken }).subscribe((authToken: any) => {
       console.log(authToken);
+
+      let reqHeader = new HttpHeaders({ 
+				'Content-Type': 'application/json',
+				'Authorization': 'Bearer ' + authToken.jwtToken
+				});
+			this.http.get<any>('https://localhost:6001/weatherforecast', { headers: reqHeader }).subscribe((data: any) => {
+      console.log(data);
+			})	
        })		  
     }
 	  this.user = user;
