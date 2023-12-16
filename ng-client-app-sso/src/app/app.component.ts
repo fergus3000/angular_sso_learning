@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { SocialAuthService  } from '@abacritt/angularx-social-login';
 import { SocialUser } from '@abacritt/angularx-social-login';
 import { GoogleLoginProvider } from '@abacritt/angularx-social-login';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -11,11 +12,17 @@ import { GoogleLoginProvider } from '@abacritt/angularx-social-login';
 export class AppComponent {
   user: SocialUser | null; 
 
-  constructor(private authService: SocialAuthService) 
+  constructor(private authService: SocialAuthService,  private http: HttpClient) 
   { 
 	this.user = null;
 	this.authService.authState.subscribe((user: SocialUser) => {
-	  console.log(user);
+    console.log(user);
+    // if we have a user, authenticate with our webapi using the idtoken
+    if (user) {
+      this.http.post<any>('https://localhost:6001/user/authenticate', { idToken: user.idToken }).subscribe((authToken: any) => {
+      console.log(authToken);
+       })		  
+    }
 	  this.user = user;
 	});
   }
