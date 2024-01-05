@@ -24,6 +24,7 @@ FROM nginx:latest AS ngi
 # NOTE: This path may change according to your project's output folder -- NB looks like the path must end with /browser as of angular 17
 COPY --from=build /dist/src/app/dist/ng-client-app-config-sso/browser /usr/share/nginx/html
 COPY /nginx.conf  /etc/nginx/conf.d/default.conf
+COPY /replace-appsettings-from-env.sh /docker-entrypoint.d/
 # Exposing a port, here it means that inside the container 
 # the app will be using Port 80 while running
 EXPOSE 80
